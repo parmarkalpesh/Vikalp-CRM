@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme {
+    --color-primary: #1e3a8a;
+    --color-secondary: #3b82f6;
+    --color-accent: #f59e0b;
+}
+
+body {
+    @apply bg-gray-50 text-gray-900 font-sans antialiased;
+}
+
+.btn-primary {
+    @apply bg-blue-700 text-white px-4 py-2 rounded-md hover:bg-blue-800 transition-colors cursor-pointer;
+}
+
+.card {
+    @apply bg-white p-6 rounded-lg shadow-sm border border-gray-100;
+}
+
+@layer base {
+    h1 {
+        @apply text-3xl font-bold mb-4;
+    }
+
+    h2 {
+        @apply text-2xl font-semibold mb-3;
+    }
+}
