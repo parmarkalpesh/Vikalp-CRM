@@ -33,10 +33,8 @@ const Home = () => {
         <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6">
             <div className="max-w-md w-full text-center space-y-8">
                 <div className="space-y-4">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-primary/10 text-primary rounded-3xl animate-bounce-slow">
-                        <Search size={40} />
-                    </div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Vikalp Electronics</h1>
+                    <img src="/logo.png" alt="Logo" className="w-20 h-20 mx-auto" />
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">Vikalp Electric & Refrigeration</h1>
                     <p className="text-gray-500 font-medium">Customer Service Portal</p>
                 </div>
 

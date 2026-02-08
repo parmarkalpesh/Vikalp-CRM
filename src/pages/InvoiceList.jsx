@@ -13,6 +13,7 @@ import {
   Loader2,
   Calendar,
   IndianRupee,
+  Trash2,
 } from "lucide-react";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
@@ -124,6 +125,20 @@ const InvoiceList = () => {
         });
       }
     }, 800);
+  };
+
+  const handleDelete = async (invoiceId) => {
+    if (!window.confirm("Are you sure you want to delete this invoice?"))
+      return;
+
+    try {
+      const config = { headers: { Authorization: `Bearer ${admin.token}` } };
+      await axios.delete(`${API_URL}/invoices/${invoiceId}`, config);
+      toast.success("Invoice deleted successfully");
+      fetchInvoices();
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to delete invoice");
+    }
   };
 
   return (
@@ -253,10 +268,10 @@ const InvoiceList = () => {
                       <td className="px-6 py-4">
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold ${invoice.paymentStatus === "Paid"
-                              ? "bg-green-100 text-green-700"
-                              : invoice.paymentStatus === "Partial"
-                                ? "bg-amber-100 text-amber-700"
-                                : "bg-red-100 text-red-700"
+                            ? "bg-green-100 text-green-700"
+                            : invoice.paymentStatus === "Partial"
+                              ? "bg-amber-100 text-amber-700"
+                              : "bg-red-100 text-red-700"
                             }`}
                         >
                           {invoice.paymentStatus}
@@ -268,19 +283,28 @@ const InvoiceList = () => {
                           { day: "2-digit", month: "short", year: "numeric" },
                         )}
                       </td>
-                      <td className="px-6 py-4 text-right space-x-2">
-                        <button
-                          onClick={() => downloadServerPDF(invoice)}
-                          disabled={downloadingId === invoice._id}
-                          className="px-4 py-2 text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors inline-flex items-center gap-1 disabled:opacity-50 text-xs font-semibold"
-                        >
-                          {downloadingId === invoice._id ? (
-                            <Loader2 size={14} className="animate-spin" />
-                          ) : (
-                            <Download size={14} />
-                          )}
-                          Download
-                        </button>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex justify-end gap-2">
+                          <button
+                            onClick={() => downloadServerPDF(invoice)}
+                            disabled={downloadingId === invoice._id}
+                            title="Download PDF"
+                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-all disabled:opacity-50"
+                          >
+                            {downloadingId === invoice._id ? (
+                              <Loader2 size={18} className="animate-spin" />
+                            ) : (
+                              <Download size={18} />
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleDelete(invoice._id)}
+                            title="Delete Invoice"
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

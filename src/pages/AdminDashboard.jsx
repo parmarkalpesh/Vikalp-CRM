@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import {
     Users,
@@ -12,22 +13,28 @@ import {
 } from 'lucide-react';
 import API_URL from '../api/config';
 
-const StatCard = ({ title, value, icon, color, subValue }) => (
-    <div className="card">
-        <div className="flex items-start justify-between">
-            <div>
-                <p className="text-sm font-medium text-gray-500">{title}</p>
-                <h3 className="text-2xl font-bold mt-1">{value}</h3>
-                {subValue && (
-                    <p className="text-xs text-gray-400 mt-1">{subValue}</p>
-                )}
-            </div>
-            <div className={`p-3 rounded-lg bg-${color}-50 text-${color}-600`}>
-                {icon}
+const StatCard = ({ title, value, icon, color, subValue, path }) => {
+    const navigate = useNavigate();
+    return (
+        <div
+            onClick={() => path && navigate(path)}
+            className={`card cursor-pointer hover:shadow-xl hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1 ${path ? 'active:scale-95' : ''} border border-gray-100 bg-white shadow-sm ring-1 ring-black/5`}
+        >
+            <div className="flex items-start justify-between">
+                <div>
+                    <p className="text-sm font-medium text-gray-500">{title}</p>
+                    <h3 className="text-2xl font-bold mt-1">{value}</h3>
+                    {subValue && (
+                        <p className="text-xs text-gray-400 mt-1">{subValue}</p>
+                    )}
+                </div>
+                <div className={`p-3 rounded-lg bg-${color}-50 text-${color}-600`}>
+                    {icon}
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
 const AdminDashboard = () => {
     const { admin } = useAuth();
@@ -88,6 +95,7 @@ const AdminDashboard = () => {
                     value={stats.customers}
                     icon={<Users size={24} />}
                     color="blue"
+                    path="/admin/customers"
                 />
                 <StatCard
                     title="Total Invoices"
@@ -95,6 +103,7 @@ const AdminDashboard = () => {
                     icon={<FileText size={24} />}
                     color="amber"
                     subValue={`Revenue: ₹${stats.totalRevenue.toLocaleString()}`}
+                    path="/admin/invoices"
                 />
                 <StatCard
                     title="Complaints"
@@ -102,10 +111,11 @@ const AdminDashboard = () => {
                     icon={<ClipboardList size={24} />}
                     color="green"
                     subValue={`${stats.pendingComplaints} Pending`}
+                    path="/admin/complaints"
                 />
             </div>
 
-        
+
         </div>
     );
 };
