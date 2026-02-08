@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import API_URL from "../api/config";
 import {
   FileText,
   Plus,
@@ -32,7 +33,7 @@ const InvoiceList = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${admin.token}` } };
       const { data } = await axios.get(
-        "http://localhost:5000/api/invoices",
+        `${API_URL}/invoices`,
         config,
       );
       setInvoices(data);
@@ -62,7 +63,7 @@ const InvoiceList = () => {
     try {
       const config = { headers: { Authorization: `Bearer ${admin.token}` } };
       const response = await axios.get(
-        `http://localhost:5000/api/invoices/${invoice._id}/download-pdf`,
+        `${API_URL}/invoices/${invoice._id}/download-pdf`,
         { ...config, responseType: "blob" },
       );
 
@@ -251,13 +252,12 @@ const InvoiceList = () => {
                       </td>
                       <td className="px-6 py-4">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold ${
-                            invoice.paymentStatus === "Paid"
+                          className={`px-3 py-1 rounded-full text-xs font-bold ${invoice.paymentStatus === "Paid"
                               ? "bg-green-100 text-green-700"
                               : invoice.paymentStatus === "Partial"
                                 ? "bg-amber-100 text-amber-700"
                                 : "bg-red-100 text-red-700"
-                          }`}
+                            }`}
                         >
                           {invoice.paymentStatus}
                         </span>
