@@ -15,15 +15,18 @@ import {
     ExternalLink,
     Loader2
 } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
+import InvoicePDF from '../components/InvoicePDF';
 import { toast } from 'react-hot-toast';
-import axios from 'axios';
-import API_URL from '../api/config';
 
 const CustomerData = () => {
     const navigate = useNavigate();
     const [data, setData] = useState(null);
     const [activeTab, setActiveTab] = useState('complaints');
+    const [selectedInvoice, setSelectedInvoice] = useState(null);
     const [downloadingId, setDownloadingId] = useState(null);
+    const invoiceRef = useRef();
 
     useEffect(() => {
         const savedData = sessionStorage.getItem('vikalpCustomerData');
@@ -38,34 +41,42 @@ const CustomerData = () => {
 
     const { customer, complaints, invoices } = data;
 
-    // Server-side PDF download (same as admin)
+    // Client-side PDF download (for customers - no auth needed for session data)
     const downloadPDF = async (invoice) => {
         if (!invoice) return;
+
         setDownloadingId(invoice._id);
+        setSelectedInvoice(invoice);
+        toast.loading('Preparing Secure PDF...', { id: 'pdf-gen' });
 
-        try {
-            const response = await axios.get(
-                `${API_URL}/invoices/public/download-pdf/${invoice._id}`,
-                { responseType: 'blob' }
-            );
+        setTimeout(async () => {
+            try {
+                const element = invoiceRef.current;
+                if (!element) {
+                    throw new Error('Invoice preview failed to load. Please try again.');
+                }
 
-            // Create a blob and download
-            const blob = new Blob([response.data], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.download = `Invoice_${invoice.invoiceNumber}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(link.href);
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
 
-            toast.success('Downloaded Successfully');
-        } catch (error) {
-            console.error('Public PDF Download Error:', error);
-            toast.error('Failed to download PDF. Please try again.');
-        } finally {
-            setDownloadingId(null);
-        }
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`Invoice_${invoice.invoiceNumber}.pdf`);
+                toast.success('Invoice Downloaded', { id: 'pdf-gen' });
+            } catch (error) {
+                console.error('Customer PDF Error:', error);
+                toast.error('Failed to generate PDF. Refresh and try again.', { id: 'pdf-gen' });
+            } finally {
+                setDownloadingId(null);
+            }
+        }, 800);
     };
 
     const getStatusBadge = (status) => {
@@ -78,6 +89,7 @@ const CustomerData = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col">
+            <InvoicePDF ref={invoiceRef} invoice={selectedInvoice} />
             {/* Header */}
             <header className="bg-white border-b border-gray-200 p-4 sticky top-0 z-10">
                 <div className="max-w-4xl mx-auto flex items-center justify-between">
@@ -100,12 +112,12 @@ const CustomerData = () => {
                             <User size={120} />
                         </div>
                         <div className="relative z-10">
-                            <h2 className="text-2xl text-primary font-bold">{customer.name}</h2>
+                            <h2 className="text-2xl font-bold">{customer.name}</h2>
                             <div className="mt-4 flex flex-wrap gap-4 text-sm text-blue-100">
-                                <div className="flex items-center gap-1.5 bg-white/10 text-primary px-3 py-1.5 rounded-full">
+                                <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
                                     <Phone size={14} /> {customer.mobile}
                                 </div>
-                                <div className="flex items-center gap-1.5 bg-white/10 text-primary px-3 py-1.5 rounded-full">
+                                <div className="flex items-center gap-1.5 bg-white/10 px-3 py-1.5 rounded-full">
                                     <MapPin size={14} /> {customer.address}
                                 </div>
                             </div>

@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { Lock, Mail, Loader2 } from 'lucide-react';
 
 const AdminLogin = () => {
-    const [email, setEmail] = useState(import.meta.env.VITE_ADMIN_EMAIL || 'admin@vikalp.com');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { login, admin, loading } = useAuth();
     const navigate = useNavigate();
