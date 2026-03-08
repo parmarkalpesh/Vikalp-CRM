@@ -472,7 +472,7 @@ const CreateInvoice = () => {
 
           {/* Items Table */}
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[1050px]">
               <thead>
                 <tr className="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 border-b-2 border-blue-900">
                   <th className="text-center px-4 py-4 text-xs font-bold text-white uppercase tracking-wider w-12">
