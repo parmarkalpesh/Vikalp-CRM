@@ -231,7 +231,7 @@ const CustomerData = () => {
               invoices.map((invoice) => (
                 <div
                   key={invoice._id}
-                  className="card flex flex-wrap items-center justify-between gap-4"
+                  className="card flex items-center justify-between gap-4"
                 >
                   <div className="flex items-center gap-4">
                     <div className="p-3 bg-amber-50 text-amber-600 rounded-xl">

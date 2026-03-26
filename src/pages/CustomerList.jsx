@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-hot-toast';
-import { Plus, Search, Edit2, UserPlus, Phone, MapPin, Loader2, Trash2, Calendar } from 'lucide-react';
+import { Plus, Search, Edit2, UserPlus, Phone, MapPin, Loader2, Trash2 } from 'lucide-react';
 import API_URL from '../api/config';
 
 const CustomerList = () => {
@@ -52,6 +52,7 @@ const CustomerList = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Frontend Validations
         if (!formData.name.trim() || formData.name.length < 3) {
             return toast.error('Full name must be at least 3 characters');
         }
@@ -108,7 +109,7 @@ const CustomerList = () => {
                         setFormData({ name: '', mobile: '', address: '' });
                         setShowModal(true);
                     }}
-                    className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
+                    className="btn-primary flex items-center gap-2"
                 >
                     <UserPlus size={18} />
                     Add Customer
@@ -117,7 +118,7 @@ const CustomerList = () => {
 
             <div className="card !p-0 overflow-hidden">
                 <div className="p-4 border-b border-gray-100 bg-gray-50/50">
-                    <div className="relative w-full">
+                    <div className="relative max-w-sm">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                         <input
                             type="text"
@@ -129,52 +130,7 @@ const CustomerList = () => {
                     </div>
                 </div>
 
-                {/* Mobile Card View */}
-                <div className="block sm:hidden divide-y divide-gray-100">
-                    {loading ? (
-                        <div className="py-12 text-center">
-                            <Loader2 className="animate-spin inline-block text-primary" />
-                        </div>
-                    ) : filteredCustomers.length === 0 ? (
-                        <div className="py-12 text-center text-gray-400">No customers found</div>
-                    ) : (
-                        filteredCustomers.map(customer => (
-                            <div key={customer._id} className="p-4 hover:bg-gray-50 transition-colors">
-                                <div className="flex justify-between items-start mb-2">
-                                    <div>
-                                        <p className="font-semibold text-gray-900">{customer.name}</p>
-                                        <p className="text-sm font-mono text-gray-600 flex items-center gap-1 mt-0.5">
-                                            <Phone size={12} /> {customer.mobile}
-                                        </p>
-                                    </div>
-                                    <div className="flex gap-1">
-                                        <button
-                                            onClick={() => openEditModal(customer)}
-                                            className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                                        >
-                                            <Edit2 size={14} />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(customer._id)}
-                                            className="p-1.5 text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                                        >
-                                            <Trash2 size={14} />
-                                        </button>
-                                    </div>
-                                </div>
-                                <p className="text-xs text-gray-500 flex items-center gap-1 mb-1">
-                                    <MapPin size={11} /> {customer.address}
-                                </p>
-                                <p className="text-xs text-gray-400 flex items-center gap-1">
-                                    <Calendar size={11} /> {new Date(customer.createdAt).toLocaleDateString()}
-                                </p>
-                            </div>
-                        ))
-                    )}
-                </div>
-
-                {/* Desktop Table View */}
-                <div className="hidden sm:block overflow-x-auto">
+                <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead className="text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50/50">
                             <tr>
@@ -232,8 +188,8 @@ const CustomerList = () => {
             {/* Add/Edit Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-2xl">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                             <h2 className="text-xl font-bold text-gray-900">
                                 {editingCustomer ? 'Update Customer' : 'Add New Customer'}
                             </h2>
@@ -249,7 +205,7 @@ const CustomerList = () => {
                                     type="text"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/10 outline-none text-sm"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/10 outline-none"
                                     placeholder="e.g. Rahul Sharma"
                                 />
                             </div>
@@ -260,7 +216,7 @@ const CustomerList = () => {
                                     type="tel"
                                     value={formData.mobile}
                                     onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/10 outline-none font-mono text-sm"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/10 outline-none font-mono"
                                     placeholder="e.g. 9876543210"
                                 />
                             </div>
@@ -271,11 +227,11 @@ const CustomerList = () => {
                                     rows="3"
                                     value={formData.address}
                                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/10 outline-none resize-none text-sm"
+                                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary/10 outline-none resize-none"
                                     placeholder="Enter full service address"
                                 />
                             </div>
-                            <div className="pt-2">
+                            <div className="pt-4">
                                 <button type="submit" className="w-full btn-primary py-3 font-semibold">
                                     {editingCustomer ? 'Save Changes' : 'Create Customer'}
                                 </button>

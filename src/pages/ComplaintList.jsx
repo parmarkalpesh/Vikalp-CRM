@@ -111,7 +111,7 @@ const ComplaintList = () => {
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="btn-primary flex items-center gap-2 w-full sm:w-auto justify-center"
+                    className="btn-primary flex items-center gap-2"
                 >
                     <Plus size={18} />
                     New Complaint
@@ -221,8 +221,8 @@ const ComplaintList = () => {
             {/* New Complaint Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-2xl">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                             <h2 className="text-xl font-bold text-gray-900">Register Complaint</h2>
                             <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600">
                                 <Plus className="rotate-45" size={24} />
