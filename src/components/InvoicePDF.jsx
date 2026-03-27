@@ -203,6 +203,15 @@ const InvoicePDF = React.forwardRef(({ invoice }, ref) => {
 
           <div style={{ display: "flex", marginTop: "20px" }}>
             <div style={{ flex: 1 }}>
+               <div style={{ marginBottom: "15px" }}>
+                <div style={{ textDecoration: "underline", fontWeight: "bold", fontSize: "11px", marginBottom: "4px" }}>Bank Details:</div>
+                <div style={{ fontSize: "10px", lineHeight: "1.4" }}>
+                  A/C Holder: <strong>Vikalp Electric and refrigeration</strong><br />
+                  A/C No: <strong>21630200000007</strong><br />
+                  IFSC Code: <strong>BARBOBGGBXX</strong><br />
+                  Bank Name : <strong>Gujrat Gramin Bank</strong>
+                </div>
+              </div>
               <div style={{ marginTop: "15px" }}>
                 <div style={{ textDecoration: "underline", fontWeight: "bold" }}>Declaration</div>
                 <div style={{ fontSize: "10px" }}>We declare that this invoice shows the actual price of the goods described and that all particulars are true and correct.</div>
